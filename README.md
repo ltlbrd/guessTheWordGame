@@ -1,3 +1,2 @@
 # guess-the-word-game
-# guess-the-word-game
-# guess-the-word-game
+Final project for my Vanilla JS class: I am using JavaScript to pull API info to generate a random word, displaying that word as placeholder characters that change to their correctly-guessed correlaries as the user enters letter guesses, receiving user guess data from an input field via button click, and displaying a functional button that asks the user to play again and reloads the page on click. Pushing commits as I go!
