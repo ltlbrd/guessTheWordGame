@@ -22,10 +22,21 @@ const message = document.querySelector(".message");
 //Hidden button that appears to prompt the player to play again
 const playAgainButton = document.querySelector(".play-again");
 
-
-//Starting word to test out game while building:
-const word = "magnolia";
+let word = "magnolia";
 const guessedLetters = [];
+let remainingGuesses = 8;
+
+//grab a word from a particular list of 800 words
+async function getWord() {
+    const request = await fetch("https://gist.githubusercontent.com/skillcrush-curriculum/7061f1d4d3d5bfe47efbfbcfe42bf57e/raw/5ffc447694486e7dea686f34a6c085ae371b43fe/words.txt");
+    const words = await request.text();
+    const wordArray = words.split("\n");
+    const randomIndex = Math.floor(Math.random() * wordArray.length);
+    word = wordArray[randomIndex].trim();
+    placeholder(word);
+};
+
+
 
 //Replace letters of secret word with placeholder character on the display:
 const placeholder = function (word) {
@@ -38,7 +49,7 @@ const placeholder = function (word) {
     wordInProgress.innerText = placeholderLetters.join("");
 };
 
-placeholder(word);
+getWord();
 
 //Guess button event listener
 guessButton.addEventListener("click", function(e) {
@@ -83,6 +94,7 @@ const makeGuess = function (guess) {
         guessedLetters.push(guess);
         console.log(guessedLetters);
         showGuesses();
+        countRemaining(guess);
         wordInProgressUpdate(guessedLetters);
     };
 };
@@ -113,6 +125,26 @@ const wordInProgressUpdate = function (guessedLetters) {
     console.log(wordReveal);
     wordInProgress.innerText = wordReveal.join("");
     successfulGuess();
+};
+
+//Count the remaining guesses
+const countRemaining = function (guess) {
+   const upperWord=  word.toUpperCase();
+    if (!upperWord.includes(guess)) {
+        message.innerText = `Sorry, but that guess is incorrect.`;
+        remainingGuesses -= 1; 
+    } else {
+        message.innerText = `Correct guess! The word contains ${guess}`;
+    }
+
+    if (remainingGuesses === 0) {
+        message.innerHTML = `You are all out of guesses. Game over! <br>The word was ${word}.`;
+        guessesRemainingSpan.innerText = `no more guesses`;
+    } else if (remainingGuesses === 1) {
+        guessesRemainingSpan.innerText = `${remainingGuesses} guess`;
+    } else {
+        guessesRemainingSpan.innerText = `${remainingGuesses} guesses`
+    }
 };
 
 //check for a winning word
